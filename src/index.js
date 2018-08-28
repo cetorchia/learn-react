@@ -25,9 +25,15 @@ class Board extends React.Component {
     }
 
     handleClick(i) {
-        /* Add the next player's letter to the specified box */
         const squares = this.state.squares.slice();
+
+        if (calculateWinner(squares) || squares[i]) {
+            return;
+        }
+
+        /* Add the next player's letter to the specified box */
         squares[i] = this.nextPlayer();
+
         /* Set the state to the new set of squares and the next player */
         this.setState({
             squares: squares,
@@ -45,7 +51,13 @@ class Board extends React.Component {
     }
 
     render() {
-        const status = 'Next player: ' + this.nextPlayer();
+        const winner = calculateWinner(this.state.squares);
+        let status;
+        if (winner) {
+            status = 'Winner: ' + winner;
+        } else {
+            status = 'Next player: ' + this.nextPlayer();
+        }
 
         return (
             <div>
@@ -92,3 +104,33 @@ ReactDOM.render(
     <Game />,
     document.getElementById('root')
 );
+
+function calculateWinner(squares) {
+    /*
+     * All indexs of the array that correspond to a win by either player,
+     * namely the horizontals, the verticals, and the diagonals.
+     */
+    const lines = [
+        [0, 1, 2],
+        [3, 4, 5],
+        [6, 7, 8],
+        [0, 3, 6],
+        [1, 4, 7],
+        [2, 5, 8],
+        [0, 4, 8],
+        [2, 4, 6],
+    ];
+
+    /*
+     * For each line, check if all boxes have the same letter. If so, then
+     * that letter is the winner. All of them could be null so we must check
+     * that the letter is not null.
+     */
+    for (let i = 0; i < lines.length; i++) {
+        const [a, b, c] = lines[i];
+        if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
+            return squares[a];
+        }
+    }
+    return null;
+}

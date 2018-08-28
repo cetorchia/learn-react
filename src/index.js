@@ -25,8 +25,10 @@ class Board extends React.Component {
     }
 
     handleClick(i) {
+        /* Add the next player's letter to the specified box */
         const squares = this.state.squares.slice();
         squares[i] = this.nextPlayer();
+        /* Set the state to the new set of squares and the next player */
         this.setState({
             squares: squares,
             xIsNext: !this.state.xIsNext,
